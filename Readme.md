@@ -23,7 +23,7 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
-2. Create a .env file in the root directory, add the two fields:
+2. In the .env file in the root directory, add your API keys for openai and tavily.
 ```
 OPENAI_API_KEY=YOUR_KEY
 TAVILY_API_KEY=YOUR_KEY
