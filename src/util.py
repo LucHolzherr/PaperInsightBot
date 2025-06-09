@@ -46,7 +46,7 @@ def create_string_of_author_data(author_data: dict):
     return text
 
 
-def save_json_write(data: dict, out_path: str):
+def json_write(data: dict, out_path: str):
     out_path = sanitize_folder_name(out_path)
     try:
         with open(out_path, 'w', encoding="utf-8") as file:
@@ -55,7 +55,7 @@ def save_json_write(data: dict, out_path: str):
     except:
         logging.error(f"Saving json to {out_path} failed.")
 
-def save_json_load(json_path: str):
+def json_load(json_path: str):
     try:
         with open(json_path, 'r', encoding="utf-8") as file:
             data = json.load(file)
@@ -64,7 +64,7 @@ def save_json_load(json_path: str):
         logging.error(f"Loading json {json_path} failed")
         return None
     
-def save_file_load(file_path: str):
+def file_load(file_path: str):
     file_path = sanitize_folder_name(file_path)
     try:
         with open(file_path, "r", encoding="utf-8") as f:
@@ -82,7 +82,7 @@ def save_file_load(file_path: str):
         logging.error(f"Could not load file from {file_path}, {e}")
         return None
 
-def save_file_write(file_path: str, data: str):
+def file_write(file_path: str, data: str):
     file_path = sanitize_folder_name(file_path)
     try:
         with open(file_path, "w") as f:

@@ -4,7 +4,7 @@ from langchain_core.runnables import Runnable
 from pathlib import Path
 
 import logging
-from src.util import create_string_of_author_data, save_file_write
+from src.util import create_string_of_author_data, file_write
 
 
 class LLMProcessor:
@@ -86,7 +86,7 @@ class LLMProcessor:
                     """
              From the google scholar summary and the web search summary below about these researchers, create a final summary of each author. 
              Highlight their affiliations, the focus of their research, important papers or projects they worked on, specifically mention their citations count. 
-             If they coauthored a paper other than {paper_name}, mention this.
+             Do not highlight the paper {paper_name}, as the user already knows that the authors have coauthored this paper.
              Google scholar summary:
              {scholar_summary}
 
@@ -141,7 +141,7 @@ class LLMProcessor:
         )
 
         if self.save_summaries:
-            save_file_write(f'{self.output_dir}/final_summary.txt', data=final_summary)
+            file_write(f'{self.output_dir}/final_summary.txt', data=final_summary)
         
         return final_summary
 
@@ -153,7 +153,7 @@ class LLMProcessor:
         )
 
         if self.save_summaries:
-            save_file_write(f'{self.intermediate_out_dir}/{author_name}_websummary.txt', data=author_web_summary)
+            file_write(f'{self.intermediate_out_dir}/{author_name}_websummary.txt', data=author_web_summary)
            
         return author_web_summary
     
@@ -174,13 +174,13 @@ class LLMProcessor:
         )
 
         if self.save_summaries:
-            save_file_write(f'{self.intermediate_out_dir}/scholar_summary.txt', data=scholar_summary)
+            file_write(f'{self.intermediate_out_dir}/scholar_summary.txt', data=scholar_summary)
 
         return scholar_summary
     
     def create_html_output(self, final_summary: str):
         html_text = self._inference(self._display_chain, prompt_input_dict={'author_summary': final_summary})
-        save_file_write(file_path=f"{self.output_dir}/final_summary.html", data=html_text)
+        file_write(file_path=f"{self.output_dir}/final_summary.html", data=html_text)
         return html_text
 
     @staticmethod

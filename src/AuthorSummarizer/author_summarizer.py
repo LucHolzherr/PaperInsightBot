@@ -11,9 +11,9 @@ from src.util import (
     filter_top_K_papers,
     sort_authors_citations,
     filter_authors_with_few_citations,
-    save_json_write,
-    save_json_load,
-    save_file_load,
+    json_write,
+    json_load,
+    file_load,
     sanitize_folder_name,
     check_files_with_pattern_exist
 )
@@ -65,10 +65,10 @@ class AuthorSummarizer:
         self.llm_processor.set_output_directory(output_dir)
 
         # in debugging mode, large parts are skipped adn the intermediate results are directly loaded.
-        skip_scholar_extraction = self.is_load_precomputed_results and Path(f"{output_dir}/scholar.json").exists()
+        skip_scholar_extraction = self.is_load_precomputed_results and Path(f"{intermediate_out_dir}/scholar.json").exists()
         removed_authors = []
         if skip_scholar_extraction:
-            authors_data_loaded = save_json_load(f'{output_dir}/scholar.json')
+            authors_data_loaded = json_load(f'{intermediate_out_dir}/scholar.json')
             if authors_data_loaded is not None:
                 authors_data = authors_data_loaded
                 author_names = [data["name"] for data in authors_data]
@@ -93,12 +93,12 @@ class AuthorSummarizer:
                 for paper in auth_data['papers']:
                     paper["abstract_summary"] = self.llm_processor.summarize_abstract(abstract=paper["abstract"])
                 # save the authors information
-                save_json_write(authors_data, f'{intermediate_out_dir}/scholar.json')
+                json_write(authors_data, f'{intermediate_out_dir}/scholar.json')
        
         # summarize the scholar information using a LLM
-        skip_scholar_summary = self.is_load_precomputed_results and Path(f"{output_dir}/scholar_summary.txt").exists()
+        skip_scholar_summary = self.is_load_precomputed_results and Path(f"{intermediate_out_dir}/scholar_summary.txt").exists()
         if skip_scholar_summary:
-            scholar_summary = save_file_load(f"{output_dir}/scholar_summary.txt")
+            scholar_summary = file_load(f"{intermediate_out_dir}/scholar_summary.txt")
             if scholar_summary is None:
                 raise FileNotFoundError(f"Loading file {output_dir}/scholar_summary.txt failed.")
         else:
@@ -109,27 +109,18 @@ class AuthorSummarizer:
 
         # perform a web-search about each author
         author_seach_results = {}
-        skip_web_search = self.is_load_precomputed_results and check_files_with_pattern_exist(output_dir, "search_result_*.txt")
-        if skip_web_search:
-            # for each author, load the search result summary
-            for auth_name in author_names:
-                file_path = f'{output_dir}/search_result_{auth_name}.txt'
-                search_result = save_file_load(file_path)
-                if search_result is None:
-                    raise FileNotFoundError(f"Loading file {file_path} failed.")
-                author_seach_results[auth_name] = search_result
-        else:
+        skip_web_search = self.is_load_precomputed_results and check_files_with_pattern_exist(intermediate_out_dir, "*_websummary.txt")
+        if not skip_web_search:
             for auth_name in author_names:
                 search_result = self.web_search.search(search_query=auth_name, max_results=self.num_web_results)
                 author_seach_results[auth_name] = search_result
-
+        
         # summarize the web search result about each author using an llm
-        skip_search_summary = self.is_load_precomputed_results and check_files_with_pattern_exist(output_dir, "sr_summary_*.txt")
         search_summary = {}
-        if skip_search_summary:
+        if skip_web_search:
             for auth_name in author_names:
-                file_path = f'{output_dir}/sr_summary_{auth_name}.txt'
-                summary = save_file_load(file_path)
+                file_path = f'{intermediate_out_dir}/{auth_name}_websummary.txt'
+                summary = file_load(file_path)
                 if summary is None:
                     raise FileNotFoundError(f"Loading file {file_path} failed.")
                 search_summary[auth_name] = summary
