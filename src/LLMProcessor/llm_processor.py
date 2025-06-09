@@ -96,6 +96,30 @@ class LLMProcessor:
         )
         self._final_summary_chain = final_summary_prompt | self._llm
 
+        # prompt to format the final summary to a nice looking HTML
+        display_prompt = ChatPromptTemplate.from_messages(
+            [
+                 (
+                    "system",
+                    "You are an expert at formatting academic content for clean HTML display.",
+                ),
+                (
+                    "user",
+                    """
+                    Format the following author summary into clean, semantic HTML for use on a webpage.
+
+                    - Use <h2> for each author name.
+                    - Display the text content for each author unchanged below the author name.
+
+                    Author summary:
+
+                    {author_summary}
+                    """,
+                ),
+            ]
+        )
+        self._display_chain = display_prompt | self._llm
+
     def set_output_directory(self, output_dir: str):
         self.output_dir = output_dir
         Path(self.output_dir).mkdir(parents=True, exist_ok=True)
@@ -129,17 +153,6 @@ class LLMProcessor:
            
         return author_web_summary
     
-    # def dummy_summarize_author_web_search(self, author_name: str, *args, **kwargs):
-    #     file_path = f"{self.output_dir}/sr_summary_{author_name}.txt"
-    #     try:
-    #         with open(file_path, "r") as f:
-    #             summary = f.read()
-    #     except:
-    #         logging.info(f"Could not read file {file_path}")
-    #         return None
-
-    #     return summary
-    
     def summarize_abstract(self, abstract: str):
         return self._inference(self._abstract_chain, prompt_input_dict={"abstract_text":abstract})
 
@@ -160,17 +173,11 @@ class LLMProcessor:
             save_file_write(f'{self.output_dir}/scholar_summary.txt', data=scholar_summary)
 
         return scholar_summary
-
-    # def dummy_summarize_scholar_information(self, *args, **kwargs):
-    #     file_path = f"{self.output_dir}/scholar_summary.txt"
-    #     try:
-    #         with open(file_path, "r") as f:
-    #             scholar_summary = f.read()
-    #     except:
-    #         logging.info(f"Could not load precomputed scholar summary from {file_path}")
-    #         return None
-        
-    #     return scholar_summary
+    
+    def create_html_output(self, final_summary: str):
+        html_text = self._inference(self._display_chain, prompt_input_dict={'author_summary': final_summary})
+        save_file_write(file_path=f"{self.output_dir}/final_summary.html", data=html_text)
+        return html_text
 
     @staticmethod
     def _inference(chain, prompt_input_dict):
