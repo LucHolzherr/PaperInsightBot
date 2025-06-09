@@ -53,7 +53,7 @@ def save_json_write(data: dict, out_path: str):
             json_data = json.dumps(data, indent=4)
             file.write(json_data)
     except:
-        logging.ERROR(f"Saving json to {out_path} failed.")
+        logging.error(f"Saving json to {out_path} failed.")
 
 def save_json_load(json_path: str):
     try:
@@ -61,17 +61,25 @@ def save_json_load(json_path: str):
             data = json.load(file)
         return data
     except:
-        logging.ERROR(f"Loading json {json_path} failed")
+        logging.error(f"Loading json {json_path} failed")
         return None
     
 def save_file_load(file_path: str):
     file_path = sanitize_folder_name(file_path)
     try:
-        with open(file_path, "r") as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             data = f.read()
             return data
-    except:
-        logging.ERROR(f"Could not load file from {file_path}")
+    except UnicodeDecodeError:
+        try:
+            # Fallback to system default or latin1 (ISO-8859-1), which always succeeds but may misinterpret characters
+            with open(file_path, "r", encoding="latin-1") as f:
+                data = f.read()
+                return data
+        except Exception as e:
+            logging.error(f"Could not load file from {file_path}, {e}")
+    except Exception as e:
+        logging.error(f"Could not load file from {file_path}, {e}")
         return None
 
 def save_file_write(file_path: str, data: str):
@@ -80,7 +88,7 @@ def save_file_write(file_path: str, data: str):
         with open(file_path, "w") as f:
             f.write(data)
     except:
-        logging.ERROR(f"Could not save file {file_path}.")
+        logging.error(f"Could not save file {file_path}.")
     
 def check_files_with_pattern_exist(folder_path: str, pattern: str):
     """ Method checks whether files with naming pattern exist in the folder.
