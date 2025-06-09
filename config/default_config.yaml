@@ -1,0 +1,9 @@
+is_user_input: true  # if false, paper_name is the input, otherwise the user is asked to provide the input interactively
+paper_name: "Repurposing diffusion-based image generators for monocular depth estimation"
+num_papers_considered: 5
+author_citations_threshold: 100 # if an author has less than this number total citations, they are not searched
+num_web_results: 5
+is_load_precomputed_results: false # debug flag, if true, the data is read from txt files instead of actaully searched and processed. Only active is is_user_input is False
+llm:
+  model: "gpt-4"
+  temperature: 0.3
