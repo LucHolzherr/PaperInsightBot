@@ -1,9 +1,18 @@
-is_user_input: true  # if false, paper_name is the input, otherwise the user is asked to provide the input interactively
-paper_name: "Repurposing diffusion-based image generators for monocular depth estimation"
-num_papers_considered: 5
-author_citations_threshold: 100 # if an author has less than this number total citations, they are not searched
+# if true, the user is prompted to input the paper name, otherwise the paper_name variable below is used.
+is_user_input: true
+# number of top citations paper considered for the author summary
+num_papers_considered: 8
+# if an author has less than this number total citations, they are not searched
+author_citations_threshold: 100 
+# number of tavily web search results used for the author summary.
 num_web_results: 5
-is_load_precomputed_results: false # debug flag, if true, the data is read from txt files instead of actaully searched and processed. Only active is is_user_input is False
+# large langauge model specification
 llm:
   model: "gpt-4"
   temperature: 0.3
+# paper_name is only used if is_user_input is false
+paper_name: "Repurposing diffusion-based image generators for monocular depth estimation"
+# developer debug option, as scholar requests and openai requests take time and money, there 
+# is the option to load intermediate results if a specific part of the code needs to be debugged.
+# Only active is is_user_input is False
+is_load_precomputed_results: false
