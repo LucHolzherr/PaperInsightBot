@@ -61,6 +61,7 @@ class AuthorSummarizer:
         # set output directory where intermediate results are saved to
         output_dir = f"output/{paper_name}"
         output_dir = sanitize_folder_name(output_dir)
+        intermediate_out_dir = f"{output_dir}/intermediate_results"
         self.llm_processor.set_output_directory(output_dir)
 
         # in debugging mode, large parts are skipped adn the intermediate results are directly loaded.
@@ -92,7 +93,7 @@ class AuthorSummarizer:
                 for paper in auth_data['papers']:
                     paper["abstract_summary"] = self.llm_processor.summarize_abstract(abstract=paper["abstract"])
                 # save the authors information
-                save_json_write(authors_data, f'{output_dir}/scholar.json')
+                save_json_write(authors_data, f'{intermediate_out_dir}/scholar.json')
        
         # summarize the scholar information using a LLM
         skip_scholar_summary = self.is_load_precomputed_results and Path(f"{output_dir}/scholar_summary.txt").exists()

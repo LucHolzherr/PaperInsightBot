@@ -8,8 +8,7 @@ from src.AuthorSummarizer.author_summarizer import AuthorSummarizer, AuthorSumma
 
 # TODO: 
 # - Change to google scholar, semanticScholar is missing many papers
-# - Format output text in a nice way or display (htmml or markdown?)
-# - Search result verification if correct persons
+# - Search result verification if correct person
 # - provide web-search urls that were used
 
 if __name__ == "__main__":
@@ -58,4 +57,3 @@ if __name__ == "__main__":
                 print(f"check config 'paper_name' field for typos.")
                 break
     
-    dbg_stop = True

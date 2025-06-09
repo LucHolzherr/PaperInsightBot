@@ -18,8 +18,10 @@ class LLMProcessor:
         self._llm = ChatOpenAI(model=model, temperature=temperature)
         self.save_summaries = save_summaries
         self.output_dir = save_path
+        self.intermediate_out_dir = f"{save_path}/intermediate_results"
         # create path if it does not exist
         Path(self.output_dir).mkdir(parents=True, exist_ok=True)
+        Path(self.intermediate_out_dir).mkdir(parents=True, exist_ok=True)
         # define the prompts for the different use-cases
         # prompt for paper-abstract summary creation
         abstract_prompt = ChatPromptTemplate.from_messages(
@@ -122,7 +124,9 @@ class LLMProcessor:
 
     def set_output_directory(self, output_dir: str):
         self.output_dir = output_dir
+        self.intermediate_out_dir = f"{output_dir}/intermediate_results"
         Path(self.output_dir).mkdir(parents=True, exist_ok=True)
+        Path(self.intermediate_out_dir).mkdir(parents=True, exist_ok=True)
     
     def create_final_summary(
         self, paper_name: str, scholar_summary: str, web_summary: str
@@ -149,7 +153,7 @@ class LLMProcessor:
         )
 
         if self.save_summaries:
-            save_file_write(f'{self.output_dir}/{author_name}_websummary.txt', data=author_web_summary)
+            save_file_write(f'{self.intermediate_out_dir}/{author_name}_websummary.txt', data=author_web_summary)
            
         return author_web_summary
     
@@ -170,7 +174,7 @@ class LLMProcessor:
         )
 
         if self.save_summaries:
-            save_file_write(f'{self.output_dir}/scholar_summary.txt', data=scholar_summary)
+            save_file_write(f'{self.intermediate_out_dir}/scholar_summary.txt', data=scholar_summary)
 
         return scholar_summary
     
