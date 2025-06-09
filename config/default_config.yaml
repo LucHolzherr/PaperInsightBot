@@ -11,7 +11,7 @@ llm:
   model: "gpt-4"
   temperature: 0.3
 # paper_name is only used if is_user_input is false
-paper_name: "Repurposing diffusion-based image generators for monocular depth estimation"
+paper_name: "Depth Pro: Sharp Monocular Metric Depth in Less Than a Second"
 # developer debug option, as scholar requests and openai requests take time and money, there 
 # is the option to load intermediate results if a specific part of the code needs to be debugged.
 # Only active is is_user_input is False
