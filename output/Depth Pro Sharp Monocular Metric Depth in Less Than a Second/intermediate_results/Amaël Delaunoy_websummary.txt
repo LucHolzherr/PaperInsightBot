@@ -1,0 +1,5 @@
+Amaël Delaunoy is a researcher specializing in computer vision and robotics. He is currently affiliated with Apple, as confirmed by his verified email address. His research contributions span various areas, including the development of Depth Pro, a model for zero-shot metric monocular depth estimation. 
+
+Delaunoy's work has been widely recognized, with 20 research works cited 317 times and read 4,769 times. His research includes the Semantic 3D Reconstruction of Heads. He has also contributed to the field of 3D reconstruction with his work on calibrating mobile devices and multi-view 3D reconstruction of asteroids. 
+
+Previously, Delaunoy has been associated with ETH Zurich, a leading research institution. His educational background includes a degree from the Université de Grenoble. Currently based in Seattle, Delaunoy maintains a strong professional network with over 500 connections on LinkedIn.

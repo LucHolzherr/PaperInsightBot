@@ -1,0 +1,7 @@
+Vladlen Koltun is a prominent figure in the field of computer science, with a focus on machine learning, robotics, computer vision, and image synthesis. Born in 1980 in Kiev, Ukraine, he grew up in Israel and completed his BS degree and PhD in computer science from Tel Aviv University. His doctoral thesis was titled "Arrangements in four dimensions and related structures."
+
+Koltun's research has been widely recognized and cited, with notable papers including "Dilated Residual Networks" and "Multi-Scale Context Aggregation by Dilated Convolutions." His work has been published in reputable journals such as IEEE Transactions on Pattern Analysis and Machine Intelligence and presented at conferences like Computer Vision and Pattern Recognition (CVPR).
+
+Koltun has also contributed to the development of CARLA, an open-source simulator for autonomous driving research, which supports the development, training, and validation of autonomous urban driving systems.
+
+Professionally, Koltun is the director of an international research organization at Apple. Prior to this, he was the Chief Scientist for Intelligent Systems at Intel, where he established an international research lab that produced significant results in various areas of computer science.
