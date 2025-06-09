@@ -1,14 +1,32 @@
 import requests
 import logging
-import json
+from typing import Tuple, List
 
 class SemanticScholarApi:
+    """
+    A wrapper class for accessing the Semantic Scholar API to retrieve academic paper and author information.
+
+    Provides methods to search for a paper by title and extract author metadata including citation counts,
+    h-index, affiliations, and paper history.
+    """
     def __init__(self):
         self.base_paper_url = "https://api.semanticscholar.org/graph/v1/paper/search"
         self.base_author_url = "https://api.semanticscholar.org/graph/v1/author"
 
 
-    def extract_information(self, paper_name: str):
+    def extract_information(self, paper_name: str) -> Tuple[List[dict], dict, bool]:
+        """
+        Search for a paper by title and retrieve associated author profiles.
+
+        Args:
+            paper_name (str): The title of the academic paper to search.
+
+        Returns:
+            tuple: A 3-element tuple containing:
+                - authors_data (list): List of dictionaries with author metadata or None if paper not found.
+                - paper_data (dict or None): Dictionary of paper metadata, or None if not found.
+                - success (bool): True if the operation succeeded, False otherwise.
+        """
         try:
             paper_data = self._search_paper(title_query=paper_name)
         except requests.exceptions.RequestException as e:
@@ -26,18 +44,17 @@ class SemanticScholarApi:
             authors_data.append(auth_data)
         
         return authors_data, paper_data, True
-    
-    def return_dummy_data(self, file_path: str):
-        try:
-            with open(file_path, 'r') as file:
-                data = json.load(file)
-        except:
-            logging.info("Precomputed scholar data not found.")
-            return None, False
-        return data, True
 
+    def _search_paper(self, title_query) -> dict:
+        """
+        Search Semantic Scholar for a paper by title and return structured metadata.
 
-    def _search_paper(self, title_query):
+        Args:
+            title_query (str): The title of the paper to search for.
+
+        Returns:
+            dict or None: Paper metadata or None if paper not found.
+        """
         params = {
             "query": title_query,
             "limit": 1,
@@ -62,7 +79,16 @@ class SemanticScholarApi:
         else:
             return None
     
-    def _get_author_publications(self, author_id):
+    def _get_author_publications(self, author_id: int) -> dict:
+        """
+        Retrieve author metadata and a list of their publications from Semantic Scholar.
+
+        Args:
+            author_id (int): Semantic Scholar's unique ID for the author.
+
+        Returns:
+            dict or None: Author information or None on failure.
+        """
         url = f"{self.base_author_url}/{author_id}"
         params = {
             "fields": "name,affiliations,citationCount,hIndex,papers.title,papers.year,papers.citationCount,papers.abstract"
