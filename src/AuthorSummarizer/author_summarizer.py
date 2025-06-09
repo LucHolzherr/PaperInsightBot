@@ -129,35 +129,13 @@ class AuthorSummarizer:
             for auth_name in author_names:
                 file_path = f'{output_dir}/sr_summary_{auth_name}.txt'
                 summary = save_file_load(file_path)
-                if search_result is None:
+                if summary is None:
                     raise FileNotFoundError(f"Loading file {file_path} failed.")
                 search_summary[auth_name] = summary
         else:
             for auth_name, search_result in author_seach_results.items():
                 summary = self.llm_processor.summarize_author_web_search(author_name=auth_name, search_text=search_result)
                 search_summary[auth_name] = summary
-
-            # ##########################################################
-            # search_summary = {}
-            # for auth_name in author_names:
-            #     result = None
-            #     if self.is_load_precomputed_results:
-            #         result = self.web_search.return_dummy_data(
-            #             f"{output_dir}/search_result_{auth_name}.txt"
-            #         )
-            #     if result is None:
-            #         result = self.web_search.search(search_query=auth_name, max_results=self.num_web_results)
-                
-            #     summary = None
-            #     if self.is_load_precomputed_results:
-            #         summary = self.llm_processor.dummy_summarize_author_web_search(
-            #             author_name=auth_name, search_text=result
-            #         )
-            #     if summary is None:
-            #         summary = self.llm_processor.summarize_author_web_search(author_name=auth_name, search_text=result)
-
-            #     search_summary[auth_name] = summary
-            # ####################################################################
         
         # append each authors summary to one text
         search_results_summary = ""
@@ -174,36 +152,11 @@ class AuthorSummarizer:
         if len(removed_authors) > 0:
             final_summary += f"\n\n The authors: {removed_authors} are not well known."
 
+        html_summary = self.llm_processor.create_html_output(final_summary)
         print(final_summary)
 
         return AuthorSummary(summary=final_summary, success=True)
 
-
-    # def _extract_scholar_information(self, paper_name: str):
-    #     authors_data, is_success = self.scholar.extract_information(paper_name)
-    #     return authors_data, is_success
-    #     # input
-    #     # if self.is_user_input:
-    #     #     # user provides paper name, repeat until the paper is found of user quits.
-    #     #     while True:
-    #     #         paper_name = input("Enter the paper name: ")
-    #     #         authors_data, is_success = self.scholar.extract_information(paper_name)
-    #     #         if is_success:
-    #     #             break
-    #     #         else:
-    #     #             print(f"Paper was not found. Check for typos and try again.")
-    #     # else:
-    #     #     paper_name = self.cfg.paper_name
-    #     #     if self.is_load_precomputed_results:
-    #     #         self.scholar.return_dummy_data(f"output/{paper_name}/scholar.json")
-
-    #     #     authors_data, is_success = self.scholar.extract_information(paper_name)
-    #     #     if not is_success:
-    #     #         raise ValueError(
-    #     #             f"Paper {paper_name} not found, make sure it is correctly spelled!"
-    #     #         )
-        
-    #     # return authors_data, paper_name
     
     def _filter_scholar_data(self, authors_data: dict, paper_data: dict):
         for auth_data in authors_data:

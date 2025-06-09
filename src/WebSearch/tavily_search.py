@@ -21,13 +21,3 @@ class TavilySearch:
            
         return result_txt
     
-    # def return_dummy_data(self, file_dir: str):
-    #     try:
-    #         with open(file_dir, "r", encoding="utf-8") as f:
-    #             results = f.read()
-    #     except:
-    #         logging.info(f"could not read file {file_dir}")
-    #         return None
-        
-    #     return results
-    
